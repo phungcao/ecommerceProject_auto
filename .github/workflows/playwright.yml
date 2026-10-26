@@ -57,6 +57,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Optimize APT Mirrors (Bypass throttled Azure mirror)
+        run: |
+          sudo sed -i 's|azure\.archive\.ubuntu\.com|archive.ubuntu.com|g' /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true
+          echo -e 'Acquire::Retries "3";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";' | sudo tee /etc/apt/apt.conf.d/99custom > /dev/null
+          sudo apt-get update -y
+
       - name: Cache Playwright Browsers
         id: playwright-cache
         uses: actions/cache@v4
