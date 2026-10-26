@@ -1,6 +1,9 @@
 name: Playwright Tests
 
 on:
+  schedule:
+    # 08:00 AM ICT (Vietnam Time, UTC+7) is 01:00 AM UTC every day
+    - cron: '0 1 * * *'
   push:
     branches: [main, master]
   pull_request:
@@ -80,6 +83,10 @@ jobs:
 
       - name: Run Playwright Tests
         run: npx playwright test
+
+      - name: Generate Summary Report
+        if: ${{ always() }}
+        run: node scripts/generate-summary.js
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4

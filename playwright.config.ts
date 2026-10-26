@@ -26,7 +26,12 @@ export default defineConfig({
   /* automationexercise.com has strict concurrency limits resulting in "queue full". Default to 1 worker for rock-solid stability */
   workers: process.env.WORKERS ? parseInt(process.env.WORKERS) : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['html', { open: 'never' }]],
+  reporter: [
+    ['html', { open: 'never' }],
+    ['list'],
+    ['json', { outputFile: 'playwright-report/results.json' }],
+    ...(process.env.CI ? [['github'] as [string]] : []),
+  ],
   /* Assertion timeout: 10s on CI for network stability, 5s locally */
   expect: {
     timeout: process.env.CI ? 10000 : 5000,
