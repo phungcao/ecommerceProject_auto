@@ -27,9 +27,9 @@ export default defineConfig({
   workers: process.env.WORKERS ? parseInt(process.env.WORKERS) : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html', { open: 'never' }]],
-  /* Strict SLA assertion timeout: 5s theo tiêu chuẩn */
+  /* Assertion timeout: 10s on CI for network stability, 5s locally */
   expect: {
-    timeout: 5000,
+    timeout: process.env.CI ? 10000 : 5000,
   },
   /* Folder for test artifacts like screenshots, videos, traces */
   outputDir: './tests/test-results',

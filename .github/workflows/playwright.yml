@@ -26,7 +26,7 @@ jobs:
       CI: true
       BASE_URL: ${{ vars.BASE_URL || 'https://automationexercise.com' }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD || 'SecurePassword123!' }}
-      WORKERS: 2
+      WORKERS: 1
 
     steps:
       - name: Checkout repository
