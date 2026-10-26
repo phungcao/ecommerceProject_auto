@@ -1,0 +1,8 @@
+{
+  "validContact": {
+    "name": "Nguyen Van A",
+    "email": "nguyenvana@example.com",
+    "subject": "Test thắc mắc dịch vụ",
+    "message": "Xin chào, đây là tin nhắn kiểm thử tự động từ Playwright POM."
+  }
+}

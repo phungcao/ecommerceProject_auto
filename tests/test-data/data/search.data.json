@@ -1,0 +1,16 @@
+{
+  "searchResult": ["Dress", "Tops", "Saree", "Tshirts", "Jeans"],
+  "emptySearchResult": [
+    "swimsuit",
+    "bikini",
+    "kimono",
+    "hoodie",
+    "pajamas",
+    "socks",
+    "gloves",
+    "scarf",
+    "blazer",
+    "underwear"
+  ],
+  "productKeyword": "Dress"
+}
