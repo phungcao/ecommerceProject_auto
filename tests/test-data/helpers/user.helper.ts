@@ -32,6 +32,14 @@ export const USER_LOCATIONS = userData.locationsByCountry as Record<
 export const USER_SEARCH_TERMS = userData.searchTerms as readonly string[];
 
 /**
+ * Preconfigured credentials read from environment variables (.env locally or GitHub Secrets on CI)
+ */
+export const PRECONFIGURED_TEST_USER = {
+  email: process.env.TEST_USER_EMAIL || '',
+  password: process.env.TEST_USER_PASSWORD || userData.newAccountTemplate.password,
+};
+
+/**
  * Chọn ngẫu nhiên 1 phần tử trong mảng
  */
 export function getRandomItem<T>(items: readonly T[] | T[]): T {

@@ -25,6 +25,7 @@ jobs:
     env:
       CI: true
       BASE_URL: ${{ vars.BASE_URL || 'https://automationexercise.com' }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD || 'SecurePassword123!' }}
       WORKERS: 1
 
@@ -35,8 +36,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
+
+      - name: Generate .env from GitHub Secrets (Isolated in Runner)
+        run: |
+          touch .env
+          echo "BASE_URL=${{ vars.BASE_URL || 'https://automationexercise.com' }}" >> .env
+          if [ -n "${{ secrets.TEST_USER_EMAIL }}" ]; then
+            echo "TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }}" >> .env
+          fi
+          if [ -n "${{ secrets.TEST_USER_PASSWORD }}" ]; then
+            echo "TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }}" >> .env
+          else
+            echo "TEST_USER_PASSWORD=SecurePassword123!" >> .env
+          fi
+          echo "WORKERS=1" >> .env
+          echo "CI=true" >> .env
 
       - name: Install dependencies
         run: npm ci
