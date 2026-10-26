@@ -20,7 +20,7 @@ jobs:
   test:
     name: Run E2E & API Tests
     timeout-minutes: 30
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     env:
       CI: true
@@ -66,11 +66,11 @@ jobs:
 
       - name: Install Playwright Browsers & OS Dependencies
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium webkit
 
       - name: Install OS Dependencies (when browsers are cached)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps
+        run: npx playwright install-deps chromium webkit
 
       - name: Run Playwright Tests
         run: npx playwright test
