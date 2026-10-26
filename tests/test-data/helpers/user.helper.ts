@@ -1,5 +1,4 @@
 import userData from '../data/user.data.json';
-import { AccountDetails } from '../../pages/signup.page';
 import {
   CreateAccountPayload,
   MandatoryAccountFields,
@@ -21,7 +20,6 @@ export const USER_TITLES = userData.titles as readonly ('Mr' | 'Mrs')[];
 export const USER_COUNTRIES = userData.countries as readonly string[];
 export const USER_DAYS = userData.day as readonly string[];
 export const USER_MONTHS = userData.month as readonly string[];
-export const USER_MONTH_NAMES = userData.monthNames as readonly string[];
 export const USER_YEARS = userData.year as readonly string[];
 export const USER_FIRST_NAMES = userData.firstNames as readonly string[];
 export const USER_LAST_NAMES = userData.lastNames as readonly string[];
@@ -170,8 +168,7 @@ export function getRandomLocation(countryInput?: string): {
   address2: string;
 } {
   const country = countryInput ?? getRandomCountry();
-  const locations =
-    USER_LOCATIONS[country] ?? USER_LOCATIONS['United States'] ?? [];
+  const locations = USER_LOCATIONS[country] ?? USER_LOCATIONS['United States'] ?? [];
   const loc =
     locations.length > 0
       ? getRandomItem(locations)
@@ -260,11 +257,10 @@ export function generateUserAccount(
   options?: DynamicAccountOptions | Partial<UserAccount>,
 ): UserAccount {
   const isOptions =
-    options !== undefined &&
-    ('useCurrentDate' in options || 'overrides' in options);
-  const opt = isOptions ? (options) : undefined;
+    options !== undefined && ('useCurrentDate' in options || 'overrides' in options);
+  const opt = isOptions ? options : undefined;
   const overrides: Partial<UserAccount> | undefined = isOptions
-    ? (opt?.overrides)
+    ? opt?.overrides
     : (options as Partial<UserAccount>);
 
   const dob = opt?.useCurrentDate
@@ -279,9 +275,7 @@ export function generateUserAccount(
     name: overrides?.name ?? name.fullName,
     email: overrides?.email ?? generateUniqueEmail('user'),
     password:
-      overrides?.password ??
-      process.env.TEST_USER_PASSWORD ??
-      userData.newAccountTemplate.password,
+      overrides?.password ?? process.env.TEST_USER_PASSWORD ?? userData.newAccountTemplate.password,
     title: overrides?.title ?? getRandomTitle(),
     day: overrides?.day ?? dob.day,
     month: overrides?.month ?? dob.month,
@@ -303,21 +297,9 @@ export function generateUserAccount(
 }
 
 /**
- * Tạo dữ liệu tài khoản hoàn chỉnh cho UI — alias của generateUserAccount.
- * UserAccount thỏa mãn AccountDetails (name/email optional theo type).
- */
-export function generateDynamicAccountDetails(
-  options?: DynamicAccountOptions | Partial<AccountDetails>,
-): AccountDetails {
-  return generateUserAccount(options);
-}
-
-/**
  * Sinh dữ liệu tài khoản người dùng cho API - Tái sử dụng generateUserAccount
  */
-export function generateUserPayload(
-  overrides?: Partial<UserAccount>,
-): CreateAccountPayload {
+export function generateUserPayload(overrides?: Partial<UserAccount>): CreateAccountPayload {
   return toApiPayload(generateUserAccount(overrides));
 }
 

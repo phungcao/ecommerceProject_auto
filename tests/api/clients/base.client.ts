@@ -46,7 +46,8 @@ export class BaseApiClient {
         // Tự động thử lại (retry) nếu server trả về lỗi 5xx hoặc trang lỗi HTML tạm thời (do server quá tải)
         const isServerGlitch =
           response.status() >= 500 ||
-          (!isJson && (rawText.includes('<html') || rawText.includes('<!DOCTYPE') || rawText.trim() === ''));
+          (!isJson &&
+            (rawText.includes('<html') || rawText.includes('<!DOCTYPE') || rawText.trim() === ''));
 
         if (isServerGlitch && attempt < maxAttempts) {
           await new Promise((resolve) => setTimeout(resolve, 500 * attempt));

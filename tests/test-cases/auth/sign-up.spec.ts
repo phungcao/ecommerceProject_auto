@@ -1,9 +1,5 @@
 import { test, expect } from '../../fixtures';
-import {
-  generateUserAccount,
-  MANDATORY_ACCOUNT_FIELDS,
-  UserAccount,
-} from '../../test-data';
+import { generateUserAccount, MANDATORY_ACCOUNT_FIELDS, UserAccount } from '../../test-data';
 
 test.describe('Authentication - Sign Up Feature (@e2e @auth @signup)', () => {
   let seededUser: UserAccount | null = null;

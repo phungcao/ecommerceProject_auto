@@ -2,6 +2,7 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { HeaderComponent } from './components/header.component';
 import { FooterComponent } from './components/footer.component';
+import { CartModalComponent } from './components/cart-modal.component';
 
 export class ProductsPage extends BasePage {
   readonly path = '/products';
@@ -9,6 +10,8 @@ export class ProductsPage extends BasePage {
   // ===== Locators =====
   readonly header: HeaderComponent;
   readonly footer: FooterComponent;
+  readonly cartModalComponent: CartModalComponent;
+
   readonly allProductsTitle: Locator;
   readonly searchInput: Locator;
   readonly searchButton: Locator;
@@ -17,16 +20,25 @@ export class ProductsPage extends BasePage {
   readonly firstProductAddToCartBtn: Locator;
   readonly firstProductViewDetailsLink: Locator;
 
-  // Modal
-  readonly cartModal: Locator;
-  readonly modalAddedTitle: Locator;
-  readonly modalViewCartLink: Locator;
-  readonly modalContinueShoppingButton: Locator;
+  // Modal compatibility getters
+  get cartModal(): Locator {
+    return this.cartModalComponent.root;
+  }
+  get modalAddedTitle(): Locator {
+    return this.cartModalComponent.addedTitle;
+  }
+  get modalViewCartLink(): Locator {
+    return this.cartModalComponent.viewCartLink;
+  }
+  get modalContinueShoppingButton(): Locator {
+    return this.cartModalComponent.continueShoppingButton;
+  }
 
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
     this.footer = new FooterComponent(page);
+    this.cartModalComponent = new CartModalComponent(page);
 
     this.allProductsTitle = page.locator(
       "//h2[contains(@class, 'title') and contains(text(), 'All Products')]",
@@ -44,13 +56,6 @@ export class ProductsPage extends BasePage {
     );
     this.firstProductViewDetailsLink = page.locator(
       "(//a[contains(@href, '/product_details/')])[1]",
-    );
-
-    this.cartModal = page.locator("//div[@id='cartModal']");
-    this.modalAddedTitle = page.locator("//div[@id='cartModal']//h4[contains(text(), 'Added!')]");
-    this.modalViewCartLink = page.locator("//div[@id='cartModal']//a[@href='/view_cart']");
-    this.modalContinueShoppingButton = page.locator(
-      "//div[@id='cartModal']//button[contains(@class, 'close-modal')]",
     );
   }
 
@@ -82,14 +87,7 @@ export class ProductsPage extends BasePage {
   // ===== Actions =====
   async searchProduct(keyword: string): Promise<void> {
     await this.searchInput.fill(keyword);
-    await this.page.waitForFunction(() => {
-      const win = window as unknown as {
-        $?: {
-          _data?: (el: Element | null, key: string) => Record<string, unknown> | undefined;
-        };
-      };
-      return Boolean(win.$?._data?.(document.getElementById('submit_search'), 'events')?.['click']);
-    });
+    await this.waitForJQueryEvent('#submit_search', 'click');
     await this.searchButton.click();
     await this.searchedProductsTitle.waitFor({ state: 'visible' });
   }
@@ -109,7 +107,7 @@ export class ProductsPage extends BasePage {
   async addProductToCartByIndex(index: number): Promise<void> {
     await this.hoverProduct(index);
     await this.productOverlayAddToCartButton(index).click();
-    await this.cartModal.waitFor({ state: 'visible' });
+    await this.cartModalComponent.waitForVisible();
   }
 
   async addProductWithInfo(index: number): Promise<{ index: number; name: string; price: string }> {
@@ -148,11 +146,10 @@ export class ProductsPage extends BasePage {
   }
 
   async viewCartFromModal(): Promise<void> {
-    await this.modalViewCartLink.click();
+    await this.cartModalComponent.viewCart();
   }
 
   async continueShoppingFromModal(): Promise<void> {
-    await this.modalContinueShoppingButton.click();
-    await this.cartModal.waitFor({ state: 'hidden' });
+    await this.cartModalComponent.continueShopping();
   }
 }

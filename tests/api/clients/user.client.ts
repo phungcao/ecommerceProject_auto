@@ -29,9 +29,7 @@ export class UserApiClient extends BaseApiClient {
   /**
    * API 7, 8, 10: POST To Verify Login
    */
-  async verifyLogin(
-    payload: VerifyLoginPayload,
-  ): Promise<ApiResponseWrapper<BaseApiResponse>> {
+  async verifyLogin(payload: VerifyLoginPayload): Promise<ApiResponseWrapper<BaseApiResponse>> {
     const form: Record<string, string> = {};
     if (payload.email !== undefined) form.email = payload.email;
     if (payload.password !== undefined) form.password = payload.password;
@@ -49,9 +47,7 @@ export class UserApiClient extends BaseApiClient {
   /**
    * API 13: PUT METHOD To Update User Account
    */
-  async updateAccount(
-    payload: CreateAccountPayload,
-  ): Promise<ApiResponseWrapper<BaseApiResponse>> {
+  async updateAccount(payload: CreateAccountPayload): Promise<ApiResponseWrapper<BaseApiResponse>> {
     return this.execute<BaseApiResponse>('PUT', '/api/updateAccount', {
       form: payload as unknown as Record<string, string>,
     });
@@ -69,9 +65,7 @@ export class UserApiClient extends BaseApiClient {
   /**
    * API 12: DELETE METHOD To Delete User Account
    */
-  async deleteAccount(
-    payload: DeleteAccountPayload,
-  ): Promise<ApiResponseWrapper<BaseApiResponse>> {
+  async deleteAccount(payload: DeleteAccountPayload): Promise<ApiResponseWrapper<BaseApiResponse>> {
     const form: Record<string, string> = {};
     if (payload.email !== undefined) form.email = payload.email;
     if (payload.password !== undefined) form.password = payload.password;

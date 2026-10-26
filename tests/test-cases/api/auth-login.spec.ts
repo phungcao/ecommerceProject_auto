@@ -49,7 +49,9 @@ test.describe('API - Authentication & Login (@api @auth)', () => {
    * URL: /api/verifyLogin
    * Expected: responseCode: 400, message: "Bad request, email or password parameter is missing in POST request."
    */
-  test('[API-08] POST /api/verifyLogin - Missing email parameter (Negative)', async ({ userApi }) => {
+  test('[API-08] POST /api/verifyLogin - Missing email parameter (Negative)', async ({
+    userApi,
+  }) => {
     const res = await userApi.verifyLogin({
       password: activeUser.password,
     });

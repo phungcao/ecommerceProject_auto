@@ -22,4 +22,32 @@ test.describe('Home Page Feature (TC-10)', () => {
       'You have been successfully subscribed!',
     );
   });
+
+  test('[TC-10-NEG] Để trống email hoặc nhập sai định dạng ngăn đăng ký subscription', async ({
+    homePage,
+  }) => {
+    await homePage.goto();
+    await homePage.footer.subscriptionHeading.scrollIntoViewIfNeeded();
+    await expect(homePage.footer.subscriptionHeading).toBeVisible();
+
+    // 1. Kiểm tra trường hợp để trống email
+    await homePage.footer.subscriptionEmailInput.fill('');
+    await homePage.footer.subscriptionButton.click();
+
+    const emptyValidity = await homePage.checkFieldValidity(homePage.footer.subscriptionEmailInput);
+    expect(emptyValidity.valueMissing).toBe(true);
+    expect(emptyValidity.valid).toBe(false);
+    await expect(homePage.footer.subscriptionSuccessMsg).toBeHidden();
+
+    // 2. Kiểm tra trường hợp email sai định dạng
+    await homePage.footer.subscriptionEmailInput.fill('invalid-email-address');
+    await homePage.footer.subscriptionButton.click();
+
+    const invalidValidity = await homePage.checkFieldValidity(
+      homePage.footer.subscriptionEmailInput,
+    );
+    expect(invalidValidity.typeMismatch).toBe(true);
+    expect(invalidValidity.valid).toBe(false);
+    await expect(homePage.footer.subscriptionSuccessMsg).toBeHidden();
+  });
 });

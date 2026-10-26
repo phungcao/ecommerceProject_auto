@@ -1,10 +1,25 @@
 import { test, expect } from '../../fixtures';
-import {
-  userData,
-  generateUserAccount,
-  toApiPayload,
-  UserAccount,
-} from '../../test-data';
+import { HomePage } from '../../pages/home.page';
+import { LoginPage } from '../../pages/login.page';
+import { SignupPage } from '../../pages/signup.page';
+import { userData, generateUserAccount, UserAccount } from '../../test-data';
+
+/**
+ * Tiện ích khởi tạo tài khoản hợp lệ qua giao diện người dùng
+ */
+async function registerUserViaUi(
+  homePage: HomePage,
+  loginPage: LoginPage,
+  signupPage: SignupPage,
+  user: UserAccount,
+): Promise<void> {
+  await loginPage.goto();
+  await loginPage.signup(user.name, user.email);
+  await signupPage.fillAccountDetails(user);
+  await signupPage.submitAccountCreation();
+  await signupPage.clickContinue();
+  await homePage.header.logout();
+}
 
 test.describe('Authentication - Login & Logout Feature (TC-02, TC-03, TC-04)', () => {
   let seededUser: UserAccount | null = null;
@@ -27,13 +42,9 @@ test.describe('Authentication - Login & Logout Feature (TC-02, TC-03, TC-04)', (
     homePage,
     loginPage,
     signupPage,
-    userApi,
   }) => {
     seededUser = generateUserAccount();
-
-    // Chuẩn bị tài khoản hợp lệ qua API (tránh flaky do flow UI đăng ký trước đó)
-    const createRes = await userApi.createAccount(toApiPayload(seededUser));
-    expect(createRes.body.responseCode).toBe(201);
+    await registerUserViaUi(homePage, loginPage, signupPage, seededUser);
 
     // 1-3. Đi đến trang chủ và xác nhận hiển thị
     await homePage.goto();
@@ -79,14 +90,11 @@ test.describe('Authentication - Login & Logout Feature (TC-02, TC-03, TC-04)', (
   test('[TC-04] Đăng xuất tài khoản người dùng (Logout User)', async ({
     homePage,
     loginPage,
-    userApi,
+    signupPage,
     page,
   }) => {
     seededUser = generateUserAccount();
-
-    // Chuẩn bị tài khoản hợp lệ qua API
-    const createRes = await userApi.createAccount(toApiPayload(seededUser));
-    expect(createRes.body.responseCode).toBe(201);
+    await registerUserViaUi(homePage, loginPage, signupPage, seededUser);
 
     // Điều hướng vào trang Login và đăng nhập
     await loginPage.goto();
@@ -101,5 +109,39 @@ test.describe('Authentication - Login & Logout Feature (TC-02, TC-03, TC-04)', (
     // 10. Xác nhận điều hướng về trang Login
     await expect(page).toHaveURL(/.*login/);
     await expect(loginPage.loginHeading).toBeVisible();
+  });
+
+  test.describe('Login - Negative Form Validations', () => {
+    test.beforeEach(async ({ loginPage }) => {
+      await loginPage.goto();
+      await expect(loginPage.loginHeading).toBeVisible();
+    });
+
+    test('[TC-02-NEG] Để trống email ngăn submit form đăng nhập qua HTML5 validation', async ({
+      loginPage,
+    }) => {
+      await loginPage.login('', 'SomePassword123!');
+      const validity = await loginPage.checkFieldValidity(loginPage.emailInput);
+      expect(validity.valueMissing).toBe(true);
+      expect(validity.valid).toBe(false);
+    });
+
+    test('[TC-02-NEG] Để trống mật khẩu ngăn submit form đăng nhập qua HTML5 validation', async ({
+      loginPage,
+    }) => {
+      await loginPage.login('test@example.com', '');
+      const validity = await loginPage.checkFieldValidity(loginPage.passwordInput);
+      expect(validity.valueMissing).toBe(true);
+      expect(validity.valid).toBe(false);
+    });
+
+    test('[TC-02-NEG] Email không đúng định dạng kích hoạt lỗi typeMismatch', async ({
+      loginPage,
+    }) => {
+      await loginPage.login('invalid-email-format', 'SomePassword123!');
+      const validity = await loginPage.checkFieldValidity(loginPage.emailInput);
+      expect(validity.typeMismatch).toBe(true);
+      expect(validity.valid).toBe(false);
+    });
   });
 });

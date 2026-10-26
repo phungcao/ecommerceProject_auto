@@ -113,28 +113,15 @@ export class CartPage extends BasePage {
 
   // ===== Actions =====
   async deleteFirstItem(): Promise<void> {
-    await this.page.waitForFunction(() => {
-      const win = window as unknown as {
-        $?: {
-          _data?: (el: Element | null, key: string) => Record<string, unknown> | undefined;
-        };
-      };
-      const btn = document.querySelector('.cart_quantity_delete');
-      return Boolean(win.$?._data?.(btn, 'events')?.['click']);
-    });
+    await this.waitForJQueryEvent('.cart_quantity_delete', 'click');
     await this.firstItemDeleteButton.click();
   }
 
   async deleteItemByProductId(productId: string | number): Promise<void> {
-    await this.page.waitForFunction(() => {
-      const win = window as unknown as {
-        $?: {
-          _data?: (el: Element | null, key: string) => Record<string, unknown> | undefined;
-        };
-      };
-      const btn = document.querySelector(`a.cart_quantity_delete[data-product-id='${productId}']`);
-      return Boolean(win.$?._data?.(btn, 'events')?.['click']);
-    });
+    await this.waitForJQueryEvent(
+      `a.cart_quantity_delete[data-product-id='${productId}']`,
+      'click',
+    );
     await this.rowDeleteButton(this.cartRow(productId)).click();
   }
 

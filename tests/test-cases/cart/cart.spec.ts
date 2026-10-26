@@ -135,7 +135,9 @@ test.describe('Cart Feature (TC-11, TC-12, TC-13, TC-17)', () => {
     await expect(cartPage.rowName(row)).toHaveText(expectedName);
     await expect(cartPage.rowPrice(row)).toHaveText(expectedPrice);
     await expect(cartPage.rowQuantity(row)).toHaveText(String(targetQuantity));
-    await expect(cartPage.rowTotalPrice(row)).toHaveText(formatPrice(unitPriceNum * targetQuantity));
+    await expect(cartPage.rowTotalPrice(row)).toHaveText(
+      formatPrice(unitPriceNum * targetQuantity),
+    );
   });
 
   test('[TC-17] Xóa sản phẩm khỏi giỏ hàng và kiểm tra cập nhật số lượng, tổng tiền (Remove Products From Cart)', async ({

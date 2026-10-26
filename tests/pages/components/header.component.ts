@@ -1,4 +1,5 @@
 import { Locator, Page } from '@playwright/test';
+import { handleHeavyLoad } from '../base.page';
 
 export class HeaderComponent {
   // ===== Locators =====
@@ -53,13 +54,7 @@ export class HeaderComponent {
 
   async navigateToLogin(): Promise<void> {
     await this.navLogin.click();
-    const isHeavyLoad = await this.page
-      .locator("//h2[contains(., 'This website is under heavy load')]")
-      .isVisible()
-      .catch(() => false);
-    if (isHeavyLoad) {
-      await this.page.reload({ waitUntil: 'domcontentloaded' });
-    }
+    await handleHeavyLoad(this.page);
   }
 
   async navigateToContactUs(): Promise<void> {
@@ -77,12 +72,6 @@ export class HeaderComponent {
 
   async deleteAccount(): Promise<void> {
     await this.navDeleteAccount.click();
-    const isHeavyLoad = await this.page
-      .locator("//h2[contains(., 'This website is under heavy load')]")
-      .isVisible()
-      .catch(() => false);
-    if (isHeavyLoad) {
-      await this.page.reload({ waitUntil: 'domcontentloaded' });
-    }
+    await handleHeavyLoad(this.page);
   }
 }

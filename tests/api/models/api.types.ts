@@ -111,17 +111,77 @@ export interface MandatoryFieldConfig {
  * Reused across both API and E2E test suites for negative testing.
  */
 export const MANDATORY_ACCOUNT_FIELDS: readonly MandatoryFieldConfig[] = [
-  { key: 'name', apiParam: 'name', uiStage: 'login', uiLocatorName: 'signupNameInput', label: 'Name' },
-  { key: 'email', apiParam: 'email', uiStage: 'login', uiLocatorName: 'signupEmailInput', label: 'Email' },
-  { key: 'password', apiParam: 'password', uiStage: 'signup', uiLocatorName: 'passwordInput', label: 'Password' },
-  { key: 'firstName', apiParam: 'firstname', uiStage: 'signup', uiLocatorName: 'firstNameInput', label: 'First Name' },
-  { key: 'lastName', apiParam: 'lastname', uiStage: 'signup', uiLocatorName: 'lastNameInput', label: 'Last Name' },
-  { key: 'address1', apiParam: 'address1', uiStage: 'signup', uiLocatorName: 'address1Input', label: 'Address' },
-  { key: 'country', apiParam: 'country', uiStage: 'signup', uiLocatorName: 'countrySelect', label: 'Country' },
-  { key: 'state', apiParam: 'state', uiStage: 'signup', uiLocatorName: 'stateInput', label: 'State' },
+  {
+    key: 'name',
+    apiParam: 'name',
+    uiStage: 'login',
+    uiLocatorName: 'signupNameInput',
+    label: 'Name',
+  },
+  {
+    key: 'email',
+    apiParam: 'email',
+    uiStage: 'login',
+    uiLocatorName: 'signupEmailInput',
+    label: 'Email',
+  },
+  {
+    key: 'password',
+    apiParam: 'password',
+    uiStage: 'signup',
+    uiLocatorName: 'passwordInput',
+    label: 'Password',
+  },
+  {
+    key: 'firstName',
+    apiParam: 'firstname',
+    uiStage: 'signup',
+    uiLocatorName: 'firstNameInput',
+    label: 'First Name',
+  },
+  {
+    key: 'lastName',
+    apiParam: 'lastname',
+    uiStage: 'signup',
+    uiLocatorName: 'lastNameInput',
+    label: 'Last Name',
+  },
+  {
+    key: 'address1',
+    apiParam: 'address1',
+    uiStage: 'signup',
+    uiLocatorName: 'address1Input',
+    label: 'Address',
+  },
+  {
+    key: 'country',
+    apiParam: 'country',
+    uiStage: 'signup',
+    uiLocatorName: 'countrySelect',
+    label: 'Country',
+  },
+  {
+    key: 'state',
+    apiParam: 'state',
+    uiStage: 'signup',
+    uiLocatorName: 'stateInput',
+    label: 'State',
+  },
   { key: 'city', apiParam: 'city', uiStage: 'signup', uiLocatorName: 'cityInput', label: 'City' },
-  { key: 'zipcode', apiParam: 'zipcode', uiStage: 'signup', uiLocatorName: 'zipcodeInput', label: 'Zipcode' },
-  { key: 'mobileNumber', apiParam: 'mobile_number', uiStage: 'signup', uiLocatorName: 'mobileNumberInput', label: 'Mobile Number' },
+  {
+    key: 'zipcode',
+    apiParam: 'zipcode',
+    uiStage: 'signup',
+    uiLocatorName: 'zipcodeInput',
+    label: 'Zipcode',
+  },
+  {
+    key: 'mobileNumber',
+    apiParam: 'mobile_number',
+    uiStage: 'signup',
+    uiLocatorName: 'mobileNumberInput',
+    label: 'Mobile Number',
+  },
 ] as const;
 
 export interface CreateAccountPayload {

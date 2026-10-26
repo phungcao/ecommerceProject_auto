@@ -62,6 +62,4 @@ export class LoginPage extends BasePage {
     }
     await this.signupButton.click();
   }
-
-
 }

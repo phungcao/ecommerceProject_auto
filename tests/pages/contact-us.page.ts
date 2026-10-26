@@ -56,16 +56,7 @@ export class ContactUsPage extends BasePage {
       await this.uploadFileInput.setInputFiles(data.filePath);
     }
 
-    await this.page.waitForFunction(() => {
-      const win = window as unknown as {
-        $?: {
-          _data?: (el: Element | null, key: string) => Record<string, unknown> | undefined;
-        };
-      };
-      return Boolean(
-        win.$?._data?.(document.getElementById('contact-us-form'), 'events')?.['submit'],
-      );
-    });
+    await this.waitForJQueryEvent('#contact-us-form', 'submit');
 
     this.page.once('dialog', (dialog) => {
       dialog.accept().catch(() => {});

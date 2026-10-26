@@ -35,4 +35,47 @@ test.describe('Contact Us Feature (TC-06)', () => {
     await expect(page).toHaveURL(/\/?$/);
     await expect(homePage.sliderCarousel).toBeVisible();
   });
+
+  test('[TC-06-NEG] Thiếu trường bắt buộc email kích hoạt HTML5 validation ngăn submit form', async ({
+    contactUsPage,
+  }) => {
+    await contactUsPage.goto();
+    await expect(contactUsPage.getInTouchHeading).toBeVisible();
+
+    // Bấm submit khi form để trống email
+    await contactUsPage.nameInput.fill('Nguyen Van A');
+    await contactUsPage.subjectInput.fill('Hoi dap');
+    await contactUsPage.messageTextarea.fill('Noi dung');
+    await contactUsPage.submitButton.click();
+
+    // Xác nhận trường Email kích hoạt lỗi valueMissing
+    const emailValidity = await contactUsPage.checkFieldValidity(contactUsPage.emailInput);
+    expect(emailValidity.valueMissing).toBe(true);
+    expect(emailValidity.valid).toBe(false);
+
+    // Xác nhận form không được submit thành công
+    await expect(contactUsPage.successAlert).toBeHidden();
+  });
+
+  test('[TC-06-NEG] Nhập email không hợp lệ kích hoạt lỗi định dạng typeMismatch', async ({
+    contactUsPage,
+  }) => {
+    await contactUsPage.goto();
+    await expect(contactUsPage.getInTouchHeading).toBeVisible();
+
+    await contactUsPage.nameInput.fill('Test User');
+    await contactUsPage.emailInput.fill('invalid-email-format');
+    await contactUsPage.subjectInput.fill('Subject Test');
+    await contactUsPage.messageTextarea.fill('Message content');
+
+    await contactUsPage.submitButton.click();
+
+    // Xác nhận trường Email kích hoạt lỗi typeMismatch
+    const emailValidity = await contactUsPage.checkFieldValidity(contactUsPage.emailInput);
+    expect(emailValidity.typeMismatch).toBe(true);
+    expect(emailValidity.valid).toBe(false);
+
+    // Xác nhận form không được submit thành công
+    await expect(contactUsPage.successAlert).toBeHidden();
+  });
 });

@@ -2,6 +2,7 @@ import { Locator, Page } from '@playwright/test';
 import { BasePage } from './base.page';
 import { HeaderComponent } from './components/header.component';
 import { FooterComponent } from './components/footer.component';
+import { CartModalComponent } from './components/cart-modal.component';
 
 export class ProductDetailPage extends BasePage {
   readonly path = '/product_details';
@@ -11,6 +12,7 @@ export class ProductDetailPage extends BasePage {
   // ===== Locators =====
   readonly header: HeaderComponent;
   readonly footer: FooterComponent;
+  readonly cartModalComponent: CartModalComponent;
 
   readonly productInformationContainer: Locator;
   readonly productName: Locator;
@@ -22,15 +24,22 @@ export class ProductDetailPage extends BasePage {
   readonly quantityInput: Locator;
   readonly addToCartButton: Locator;
 
-  // Modal
-  readonly cartModal: Locator;
-  readonly modalViewCartLink: Locator;
-  readonly modalContinueShoppingButton: Locator;
+  // Modal compatibility getters
+  get cartModal(): Locator {
+    return this.cartModalComponent.root;
+  }
+  get modalViewCartLink(): Locator {
+    return this.cartModalComponent.viewCartLink;
+  }
+  get modalContinueShoppingButton(): Locator {
+    return this.cartModalComponent.continueShoppingButton;
+  }
 
   constructor(page: Page) {
     super(page);
     this.header = new HeaderComponent(page);
     this.footer = new FooterComponent(page);
+    this.cartModalComponent = new CartModalComponent(page);
 
     this.productInformationContainer = page.locator(
       "//div[contains(@class, 'product-information')]",
@@ -50,12 +59,6 @@ export class ProductDetailPage extends BasePage {
     this.quantityInput = this.productInformationContainer.locator("//input[@id='quantity']");
     this.addToCartButton = this.productInformationContainer.locator(
       "//button[contains(@class, 'cart')]",
-    );
-
-    this.cartModal = page.locator("//div[@id='cartModal']");
-    this.modalViewCartLink = page.locator("//div[@id='cartModal']//a[@href='/view_cart']");
-    this.modalContinueShoppingButton = page.locator(
-      "//div[@id='cartModal']//button[contains(@class, 'close-modal')]",
     );
   }
 
@@ -83,25 +86,16 @@ export class ProductDetailPage extends BasePage {
   }
 
   async addToCart(): Promise<void> {
-    await this.page.waitForFunction(() => {
-      const win = window as unknown as {
-        $?: {
-          _data?: (el: Element | null, key: string) => Record<string, unknown> | undefined;
-        };
-      };
-      const btn = document.querySelector('button.cart');
-      return Boolean(win.$?._data?.(btn, 'events')?.['click']);
-    });
+    await this.waitForJQueryEvent('button.cart', 'click');
     await this.addToCartButton.click();
-    await this.cartModal.waitFor({ state: 'visible' });
+    await this.cartModalComponent.waitForVisible();
   }
 
   async viewCartFromModal(): Promise<void> {
-    await this.modalViewCartLink.click();
+    await this.cartModalComponent.viewCart();
   }
 
   async continueShoppingFromModal(): Promise<void> {
-    await this.modalContinueShoppingButton.click();
-    await this.cartModal.waitFor({ state: 'hidden' });
+    await this.cartModalComponent.continueShopping();
   }
 }
