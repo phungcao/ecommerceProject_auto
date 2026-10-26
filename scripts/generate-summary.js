@@ -42,19 +42,19 @@ const durationSec = Math.round(stats.duration / 1000);
 const durationFormatted = `${Math.floor(durationSec / 60)}m ${durationSec % 60}s`;
 
 const eventName = process.env.GITHUB_EVENT_NAME || 'workflow_dispatch';
-let triggerLabel = '⚡ Manual Trigger';
+let triggerLabel = '⚡ Manual Trigger (Regression)';
 if (eventName === 'schedule') {
-  triggerLabel = '🕒 Daily Schedule (08:00 AM ICT / 01:00 AM UTC)';
+  triggerLabel = '🕒 Daily Scheduled Run (08:00 AM ICT / 01:00 AM UTC)';
 } else if (eventName === 'push') {
-  triggerLabel = '🚀 Code Push';
+  triggerLabel = '🚀 New Commit / Push (Full Regression)';
 } else if (eventName === 'pull_request') {
-  triggerLabel = '🔀 Pull Request';
+  triggerLabel = '🔀 Pull Request (Full Regression)';
 }
 
 const commitSha = process.env.GITHUB_SHA ? process.env.GITHUB_SHA.substring(0, 7) : 'local';
 const branch = process.env.GITHUB_REF_NAME || 'main';
 
-let md = `## 🎭 Playwright Automation Test Report
+let md = `## 🎭 Playwright Regression Test Report
 
 ### Kết Quả Tổng Thể: **${statusBadge}**
 

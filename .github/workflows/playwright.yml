@@ -1,13 +1,13 @@
-name: Playwright Tests
+name: Playwright Regression Tests
 
 on:
   schedule:
     # 08:00 AM ICT (Vietnam Time, UTC+7) is 01:00 AM UTC every day
     - cron: '0 1 * * *'
   push:
-    branches: [main, master]
+    branches: ['**']
   pull_request:
-    branches: [main, master]
+    branches: ['**']
   workflow_dispatch:
 
 # OWASP CI/CD Hardening: Restrict default permissions to read-only
@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   test:
-    name: Run E2E & API Tests
+    name: Regression Suite (E2E & API)
     timeout-minutes: 30
     runs-on: ubuntu-24.04
 
