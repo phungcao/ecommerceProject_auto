@@ -2,8 +2,8 @@ name: Playwright Regression Tests
 
 on:
   schedule:
-    # 08:00 AM ICT (Vietnam Time, UTC+7) is 01:00 AM UTC every day
-    - cron: '0 1 * * *'
+    # 09:15 AM ICT (Vietnam Time, UTC+7) is 02:15 AM UTC every day
+    - cron: '15 2 * * *'
   push:
     branches: ['**']
   pull_request:

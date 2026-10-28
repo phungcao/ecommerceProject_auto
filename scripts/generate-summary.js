@@ -44,7 +44,7 @@ const durationFormatted = `${Math.floor(durationSec / 60)}m ${durationSec % 60}s
 const eventName = process.env.GITHUB_EVENT_NAME || 'workflow_dispatch';
 let triggerLabel = '⚡ Manual Trigger (Regression)';
 if (eventName === 'schedule') {
-  triggerLabel = '🕒 Daily Scheduled Run (08:00 AM ICT / 01:00 AM UTC)';
+  triggerLabel = '🕒 Daily Scheduled Run (09:15 AM ICT / 02:15 AM UTC)';
 } else if (eventName === 'push') {
   triggerLabel = '🚀 New Commit / Push (Full Regression)';
 } else if (eventName === 'pull_request') {
